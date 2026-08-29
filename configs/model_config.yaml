@@ -1,0 +1,66 @@
+# ============================================================
+# MedRAG — Model Configuration
+# ============================================================
+
+base_model:
+  name: "microsoft/Phi-3-mini-4k-instruct"
+  torch_dtype: "float16"
+  device_map: "auto"
+  trust_remote_code: true
+
+qlora:
+  r: 16
+  lora_alpha: 32
+  target_modules:
+    - "q_proj"
+    - "k_proj"
+    - "v_proj"
+    - "o_proj"
+    - "gate_proj"
+    - "up_proj"
+    - "down_proj"
+  lora_dropout: 0.05
+  bias: "none"
+  task_type: "CAUSAL_LM"
+
+quantization:
+  load_in_4bit: true
+  bnb_4bit_quant_type: "nf4"
+  bnb_4bit_compute_dtype: "float16"
+  bnb_4bit_use_double_quant: true
+
+training:
+  output_dir: "models/phi3-medrag-ft"
+  num_train_epochs: 3
+  per_device_train_batch_size: 4
+  per_device_eval_batch_size: 4
+  gradient_accumulation_steps: 4
+  gradient_checkpointing: true
+  optim: "paged_adamw_32bit"
+  save_steps: 100
+  logging_steps: 25
+  learning_rate: 2.0e-4
+  weight_decay: 0.001
+  fp16: false
+  bf16: false
+  max_grad_norm: 0.3
+  max_steps: -1
+  warmup_ratio: 0.03
+  group_by_length: true
+  lr_scheduler_type: "cosine"
+  report_to: "mlflow"
+  evaluation_strategy: "steps"
+  eval_steps: 100
+  load_best_model_at_end: true
+  metric_for_best_model: "eval_loss"
+
+dataset_format:
+  prompt_template: "<|user|>\n{question}<|end|>\n<|assistant|>\n{answer}<|end|>"
+  max_seq_length: 1024
+  packing: false
+
+export:
+  push_to_hub: true
+  hub_model_id: "medrag-phi3-ft"
+  merge_weights: true
+  gguf_quantize: false

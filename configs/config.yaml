@@ -1,0 +1,110 @@
+project:
+  name: "MedRAG"
+  description: "Medical QA System using RAG + Fine-tuned LLM"
+  version: "1.0.0"
+
+paths:
+  data_raw: "data/raw"
+  data_processed: "data/processed"
+  chroma_db: "data/chroma_db"
+  mlflow_tracking: "mlruns"
+  models_dir: "models"
+  reports_dir: "reports"
+  logs_dir: "logs"
+
+dataset:
+  name: "lavita/MedQuAD"
+  split: "train"
+  max_samples: 47457
+  test_size: 0.1
+  val_size: 0.1
+  seed: 42
+  text_column: "answer"
+  question_column: "question"
+  source_column: "source"
+
+preprocessing:
+  chunk_size: 512
+  chunk_overlap: 64
+  min_chunk_length: 50
+  max_chunk_length: 1024
+  remove_duplicates: true
+  similarity_threshold: 0.95
+
+embedding:
+  model_name: "sentence-transformers/all-MiniLM-L6-v2"
+  device: "cpu"
+  batch_size: 64
+  embedding_dim: 384
+  normalize: true
+
+chroma:
+  collection_name: "medrag_docs"
+  distance_metric: "cosine"
+  persist: true
+
+llm:
+  provider: "ollama"
+  model_name: "phi3:mini"
+  base_url: "http://localhost:11434"
+  temperature: 0.1
+  max_tokens: 512
+  timeout: 60
+
+rag:
+  top_k: 5
+  rerank: false
+  min_relevance_score: 0.3
+  prompt_template: |
+    You are a helpful medical information assistant.
+    Answer the question based ONLY on the provided context.
+    If the context does not contain enough information, say I don't have enough information.
+
+    Context:
+    {context}
+
+    Question: {question}
+
+    Answer:
+
+baseline:
+  tfidf:
+    max_features: 50000
+    ngram_range: [1, 2]
+    top_k: 5
+  bm25:
+    k1: 1.5
+    b: 0.75
+    top_k: 5
+
+evaluation:
+  metrics:
+    - hit_at_1
+    - hit_at_3
+    - hit_at_5
+    - mrr
+    - faithfulness
+    - answer_relevancy
+  eval_sample_size: 500
+  faithfulness_threshold: 0.7
+
+mlflow:
+  experiment_name: "medrag_experiments"
+  tracking_uri: "mlruns"
+
+api:
+  host: "0.0.0.0"
+  port: 8000
+  workers: 1
+  reload: false
+  cors_origins:
+    - "http://localhost:7860"
+    - "http://localhost:3000"
+  rate_limit: 100
+
+monitoring:
+  reference_data_path: "data/processed/reference_queries.csv"
+  report_output_dir: "reports/drift"
+  drift_check_interval_hours: 24
+  alert_threshold: 0.3
+  window_size: 100

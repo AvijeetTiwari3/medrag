@@ -1,0 +1,51 @@
+﻿# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Data (large files - track with DVC instead)
+data/raw/*.parquet
+data/processed/*.parquet
+data/chroma_db/
+
+# Models (large - upload to HuggingFace Hub)
+models/
+
+# MLflow
+mlruns/
+
+# Logs
+logs/
+*.log
+
+# Reports
+reports/drift/*.html
+
+# Testing
+.coverage
+htmlcov/
+.pytest_cache/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment variables
+.env
+.env.local

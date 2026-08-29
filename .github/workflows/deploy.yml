@@ -1,0 +1,68 @@
+name: Deploy to HuggingFace Spaces
+
+on:
+  push:
+    branches: [main]
+
+# SETUP INSTRUCTIONS:
+# 1. Create a HuggingFace Space at https://huggingface.co/new-space
+#    - SDK: Gradio | Hardware: CPU Basic (free)
+# 2. Generate HF token at https://huggingface.co/settings/tokens
+# 3. Add it to GitHub: Settings -> Secrets -> New secret: HF_TOKEN
+
+jobs:
+  deploy-to-hf-spaces:
+    name: Deploy Gradio Demo to HF Spaces
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install huggingface_hub
+        run: pip install huggingface_hub
+
+      - name: Push to HuggingFace Spaces
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_SPACE_ID: "YOUR_USERNAME/medrag"   # <- Change this to your HF Space ID
+        run: |
+          python - <<'PYEOF'
+          import os
+          from huggingface_hub import HfApi
+
+          api = HfApi(token=os.environ["HF_TOKEN"])
+          space_id = os.environ["HF_SPACE_ID"]
+
+          files_to_upload = [
+              ("app.py", "app.py"),
+              ("requirements.txt", "requirements.txt"),
+              ("configs/config.yaml", "configs/config.yaml"),
+          ]
+
+          for local_path, repo_path in files_to_upload:
+              if os.path.exists(local_path):
+                  api.upload_file(
+                      path_or_fileobj=local_path,
+                      path_in_repo=repo_path,
+                      repo_id=space_id,
+                      repo_type="space",
+                  )
+                  print(f"Uploaded: {local_path} -> {repo_path}")
+
+          # Upload src/ directory
+          api.upload_folder(
+              folder_path="src",
+              path_in_repo="src",
+              repo_id=space_id,
+              repo_type="space",
+          )
+          print("Deployment complete!")
+          PYEOF
