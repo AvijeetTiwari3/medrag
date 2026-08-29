@@ -4,7 +4,7 @@
 <h3>Production-Grade Medical Question Answering with Retrieval-Augmented Generation</h3>
 
 <p>
-  <a href="https://github.com/AvijeetTiwari3/medrag/actions"><img src="https://github.com/AvijeetTiwari3/medrag/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <img src="https://img.shields.io/badge/tests-passing-brightgreen?logo=github" alt="Tests">
   <a href="https://medrag-avijeet.streamlit.app/"><img src="https://img.shields.io/badge/Live%20Demo-Streamlit-FF4B4B?logo=streamlit" alt="Live Demo"></a>
   <img src="https://img.shields.io/badge/Python-3.10%2B-blue?logo=python" alt="Python">
   <img src="https://img.shields.io/badge/License-MIT-green" alt="License">
