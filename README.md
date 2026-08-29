@@ -5,13 +5,13 @@
 [![CI](https://github.com/your-username/medrag/actions/workflows/ci.yml/badge.svg)](https://github.com/your-username/medrag/actions)
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://python.org)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![HuggingFace](https://img.shields.io/badge/Demo-HuggingFace%20Spaces-orange)](https://huggingface.co/spaces/your-username/medrag)
+[![Demo](https://img.shields.io/badge/Live%20Demo-Streamlit-FF4B4B)](https://medrag-avijeet.streamlit.app/)
 
 ---
 
 ## Live Demo
 
-> Try it here: [HuggingFace Spaces - MedRAG](https://huggingface.co/spaces/your-username/medrag) *(deploy karne ke baad link update karo)*
+> **Try it live:** [medrag-avijeet.streamlit.app](https://medrag-avijeet.streamlit.app/)
 
 ---
 
